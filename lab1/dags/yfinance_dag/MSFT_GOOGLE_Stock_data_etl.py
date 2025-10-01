@@ -1,3 +1,5 @@
+# DAG to fetch MSFT and GOOGL stock data from Yahoo Finance API and load into Snowflake
+
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
@@ -6,7 +8,7 @@ from datetime import datetime, timedelta
 import yfinance as yf
 import pandas as pd
 
-
+# Default arguments for DAG 
 default_args = {
     'owner': 'Data226_lab1_Rishitha',
     'depends_on_past': False,
@@ -15,22 +17,20 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
+# Constants for Snowflake table and connection 
 RAW_TABLE = "USER_DB_FERRET.RAW.MSFT_GOOGL_RAW_DATA"
 SNOWFLAKE_CONN_ID = "my_snowflake_conn"
 STOCK_DAYS = 180
 SYMBOLS = ['GOOGL', 'MSFT']
 
-
+# Function to fetch stock data and load into Snowflake
 def fetch_and_load_stock_data(**kwargs):
     """
     Fetch recent stock prices for MSFT and GOOGL, then load them into Snowflake.
 
     Retrieves last 180 trading days from Yahoo Finance, formats and cleans data,
     and upserts to a Snowflake table.
-    Args:
-        **kwargs: Airflow context arguments (not used here).
-    Returns:
-        str: Summary of operation result.
+    
     """
     frames = []
 
