@@ -1,0 +1,59 @@
+
+# Layer: INTERMEDIATE
+# Purpose: Test integrity of intermediate analytical views
+#          that compute technical indicators (returns, SMA, ROC, volatility).
+# Tests:
+#   • not_null – Ensures each intermediate table has valid symbol/date keys.
+#   • relationships – Confirms symbol/date values align with staging data.
+# Notes:
+#   Metric columns are not tested for not_null since rolling functions
+#   naturally produce NULLs during initial windows.
+# Outcome:
+#   Verifies integrity of intermediate layer and linkage to staging.
+
+version: 2
+
+models:
+  - name: int_daily_returns
+    columns:
+      - name: symbol
+        tests: [not_null]
+      - name: date
+        tests:
+          - not_null
+          - relationships:
+              to: ref('staging_stock_prices')
+              field: date
+
+  - name: int_sma
+    columns:
+      - name: symbol
+        tests: [not_null]
+      - name: date
+        tests:
+          - not_null
+          - relationships:
+              to: ref('staging_stock_prices')
+              field: date
+
+  - name: int_roc_momentum
+    columns:
+      - name: symbol
+        tests: [not_null]
+      - name: date
+        tests:
+          - not_null
+          - relationships:
+              to: ref('staging_stock_prices')
+              field: date
+
+  - name: int_volatility
+    columns:
+      - name: symbol
+        tests: [not_null]
+      - name: date
+        tests:
+          - not_null
+          - relationships:
+              to: ref('staging_stock_prices')
+              field: date

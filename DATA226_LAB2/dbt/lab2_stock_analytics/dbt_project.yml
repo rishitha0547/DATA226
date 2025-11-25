@@ -1,0 +1,39 @@
+name: 'lab2_stock_analytics'
+version: '1.0.0'
+
+profile: 'lab2_stock_analytics'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  lab2_stock_analytics:
+    # Default: build models as views
+    +materialized: view
+
+    # Staging models are views
+    Staging:
+      +schema: STAGING
+      +materialized: view
+    
+    # Intermediate models are views
+    Intermediate:
+      +schema: INTERMEDIATE
+      +materialized: view
+
+    # Marts are your final analytics tables (stored in Snowflake)
+    Marts:
+      +schema: ANALYTICS
+      +materialized: table
+
+snapshots:
+  lab2_stock_analytics:
+    +schema: SNAPSHOT

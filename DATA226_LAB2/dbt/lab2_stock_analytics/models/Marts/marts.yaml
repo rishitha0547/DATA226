@@ -1,0 +1,82 @@
+
+# Layer: MARTS (FINAL)
+# Purpose: Validate the final analytical table that aggregates all
+#          technical indicators for BI dashboards and forecasting.
+# Tests:
+#   • not_null – Ensures key fields (symbol, date, unique_key) are populated.
+#   • unique – Confirms there are no duplicate symbol/date records.
+#   • relationships – Validates symbols align with staging layer.
+#   • accepted_range – Checks for reasonable metric ranges (optional).
+# Outcome:
+#   Ensures final mart data is accurate, complete, and suitable for visualization.
+
+version: 2
+
+models:
+  - name: final_stock_price_table
+    description: "Final mart combining technical indicators per symbol/date."
+    columns:
+      # ---- Primary business key (dimension) ----
+      - name: symbol
+        description: "Ticker symbol."
+        tests:
+          - not_null                 
+          - relationships:            
+              to: ref('staging_stock_prices')
+              field: symbol
+
+      # ---- Primary business key (date grain) ----
+      - name: date
+        description: "Trading date."
+        tests:
+          - not_null                  
+
+      # ---- Surrogate key enforcing uniqueness at (symbol, date) ----
+      - name: unique_key
+        description: "Surrogate key for (symbol, date)."
+        tests:
+          - not_null                  
+          - unique                    
+
+      # ---- Metrics: use sanity ranges, not not_null  ----
+      - name: daily_return_pct
+        description: "Day-to-day percent return ((close - lag)/lag*100)."
+        tests:
+          - accepted_range:           
+              min_value: -100
+              max_value: 100
+
+      - name: sma_20
+        description: "20-day moving average of close."
+        tests:
+          # Tip: You can omit accepted_values here; it does nothing with an empty list.
+          # If you want a sanity check, prefer accepted_range with a floor of 0.
+          # Example (uncomment to use):
+          # - accepted_range:
+          #     min_value: 0
+          #     inclusive: true
+
+      - name: sma_50
+        description: "50-day moving average of close."
+        tests:
+          - accepted_range:           
+              min_value: 0
+              inclusive: true
+
+      - name: roc_10
+        description: "10-day rate of change (%)."
+        tests:
+          - accepted_range:           
+              min_value: -100
+              max_value: 100
+
+      - name: momentum_10
+        description: "10-day momentum (close - close_lag_10)."
+        tests: []                     
+
+      - name: vol_20d
+        description: "Rolling 20-day stddev of daily returns."
+        tests:
+          - accepted_range:           
+              min_value: 0
+              inclusive: true
