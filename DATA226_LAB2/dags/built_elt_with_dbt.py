@@ -16,9 +16,9 @@ DBT_PROJECT_DIR = "/opt/airflow/dbt/lab2_stock_analytics"
 conn = BaseHook.get_connection('my_snowflake_conn')
 with DAG(
     "BuildELT_dbt",
-    start_date=datetime(2025, 3, 19),
+    start_date=datetime(2025, 11, 21),
     description="A sample Airflow DAG to invoke dbt runs using a BashOperator",
-    schedule=None,
+    schedule='45 3 * * *', # daily at 03:45
     catchup=False,
     default_args={
         "env": {
@@ -47,10 +47,5 @@ with DAG(
         task_id="dbt_snapshot",
         bash_command=f"/home/airflow/.local/bin/dbt snapshot --profiles-dir {DBT_PROJECT_DIR} --project-dir {DBT_PROJECT_DIR}",
     )
-
-    # print_env_var = BashOperator(
-    #    task_id='print_aa_variable',
-    #    bash_command='echo "The value of AA is: $DBT_ACCOUNT,$DBT_ROLE,$DBT_DATABASE,$DBT_WAREHOUSE,$DBT_USER,$DBT_TYPE,$DBT_SCHEMA"'
-    # )
 
     dbt_run >> dbt_test >> dbt_snapshot

@@ -4,7 +4,6 @@ from airflow.decorators import task
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 from datetime import datetime
 
-# ---------- Snowflake helpers ----------
 
 def get_conn_id() -> str:
     # Airflow Variable "snowflake_conn_id" should be set to "my_snowflake_conn"
@@ -115,14 +114,14 @@ def predict(train_input_table: str, forecast_table: str, final_table: str):
 
 with DAG(
     dag_id="ML_Forecast_DAG",
-    start_date=datetime(2025, 10, 5),
+    start_date=datetime(2025, 10, 20),
     schedule="00 4 * * *",  # daily at 04:00
     catchup=False,
     tags=["ML", "ELT"],
     description="Train Snowflake ML Forecast daily and publish 7-day predictions."
 ) as dag:
 
-    # Airflow Variables (fallback to sane defaults)
+    # Airflow Variables 
     etl_table      = Variable.get("etl_table",      default_var="USER_DB_FERRET.RAW.STOCK_PRICES")
     train_view     = Variable.get("train_view",     default_var="USER_DB_FERRET.ADHOC.MARKET_DATA_VIEW")
     forecast_table = Variable.get("forecast_table", default_var="USER_DB_FERRET.MODEL.FORECASTS")
