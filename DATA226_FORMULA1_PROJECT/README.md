@@ -19,12 +19,6 @@ update the src paths below (banner.png, architecture.png, schema.png, dashboard.
 
 This project builds a complete **Formula 1 performance analytics platform** that ingests **historical and real-time data** from the OpenF1 API, processes it through a modern data stack, and surfaces insights via an interactive dashboard.
 
-The platform answers questions like:
-
-- How does a driver’s **pace** evolve over a race?
-- How quickly do **tires degrade** under different speed profiles?
-- Which **strategies** lead to better race outcomes?
-
 ---
 
 ## ✨ Main Features
@@ -38,7 +32,6 @@ The platform answers questions like:
   - Rolling pace stability (std dev)
   - Driver/session summary metrics
 - 📊 **Looker Studio dashboard** with interactive filters (driver, date, session)
-- 🧠 Session-aware pipeline design to avoid overlap and ensure clean ingestion
 
 ---
 
@@ -61,10 +54,6 @@ The platform answers questions like:
 ---
 
 ## 🗂️ Database Schema
-
-<p align="center">
-  <img src="images/schema.png" alt="Database Schema" width="85%">
-</p>
 
 Key models include:
 
@@ -130,7 +119,6 @@ These models feed directly into the dashboard for rich F1 analytics.
 - **Sector Speed vs Average Pace** – sector performance vs rolling lap average  
 - **Pace Strategy Breakdown** – donut chart illustrating time spent in different pace/strategy modes  
 
-If your dashboard is public, you can add a link here:
 
-```text
-🔗 Dashboard: <add your Looker Studio URL here>
+```text 
+https://lookerstudio.google.com/reporting/4faa7e79-f8af-450b-9ac7-f9c3d0755488
