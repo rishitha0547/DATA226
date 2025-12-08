@@ -7,7 +7,7 @@ update the src paths below (banner.png, architecture.png, schema.png, dashboard.
   <img src="images/banner.png" alt="F1 Analytics Platform" width="80%">
 </p>
 
-<h1 align="center">🏎️ F1 Performance Analytics Platform</h1>
+<h1 align="center">F1 Performance Analytics Platform</h1>
 
 <p align="center">
   End-to-end Formula 1 analytics built with OpenF1, Airflow, Snowflake, dbt and Looker Studio.
