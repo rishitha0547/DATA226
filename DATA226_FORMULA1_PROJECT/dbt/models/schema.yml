@@ -1,0 +1,615 @@
+# version: 2
+
+# # ============================================================
+# #  DBT MODELS (staging + intermediate + marts)
+# # ============================================================
+
+# models:
+
+#   # ------------------------------
+#   # STAGING MODELS
+#   # ------------------------------
+
+#   - name: stg_openf1_laps_historical
+#     description: "Clean + typed historical laps data."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - driver_number
+#             - lap_number
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: driver_number
+#         tests: [not_null]
+#       - name: lap_number
+#         tests: [not_null]
+
+#   - name: stg_openf1_laps_realtime
+#     description: "Clean + typed realtime laps data."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - driver_number
+#             - lap_number
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: driver_number
+#         tests: [not_null]
+#       - name: lap_number
+#         tests: [not_null]
+
+#   - name: stg_openf1_position_historical
+#     description: "Clean + typed historical driver positions."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - driver_number
+#             - event_timestamp
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: driver_number
+#         tests: [not_null]
+#       - name: event_timestamp
+#         tests: [not_null]
+
+#   - name: stg_openf1_position_realtime
+#     description: "Clean realtime driver positions."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - driver_number
+#             - event_timestamp
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: driver_number
+#         tests: [not_null]
+#       - name: event_timestamp
+#         tests: [not_null]
+
+#   - name: stg_openf1_race_control_historical
+#     description: "Clean historical race control messages."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - event_timestamp
+#             - message
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: event_timestamp
+#         tests: [not_null]
+#       - name: message
+#         tests: [not_null]
+
+#   - name: stg_openf1_race_control_realtime
+#     description: "Clean realtime race control messages."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - event_timestamp
+#             - message
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: event_timestamp
+#         tests: [not_null]
+#       - name: message
+#         tests: [not_null]
+
+
+#   # ------------------------------
+#   # INTERMEDIATE UNION MODELS
+#   # ------------------------------
+
+#   - name: int_openf1_laps_all
+#     description: "Historical + realtime laps, merged and deduped."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - driver_number
+#             - lap_number
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: driver_number
+#         tests: [not_null]
+#       - name: lap_number
+#         tests: [not_null]
+
+#   - name: int_openf1_position_all
+#     description: "Historical + realtime driver positions, merged and deduped."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - driver_number
+#             - event_timestamp
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: driver_number
+#         tests: [not_null]
+#       - name: event_timestamp
+#         tests: [not_null]
+
+#   - name: int_openf1_race_control_all
+#     description: "Historical + realtime race control messages, merged and deduped."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - event_timestamp
+#             - message
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: event_timestamp
+#         tests: [not_null]
+#       - name: message
+#         tests: [not_null]
+
+
+#   # ------------------------------
+#   # INTERMEDIATE FEATURE MODELS
+#   # ------------------------------
+
+#   - name: int_session_driver_laps
+#     description: "Lap-level table enriched with nearest-as-of driver position."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - driver_number
+#             - lap_number
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: driver_number
+#         tests: [not_null]
+#       - name: lap_number
+#         tests: [not_null]
+
+#   - name: int_driver_lap_features
+#     description: "Feature engineering: momentum, degradation, stability, labels, performance score."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - driver_number
+#             - lap_number
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: driver_number
+#         tests: [not_null]
+#       - name: lap_number
+#         tests: [not_null]
+
+
+#   # ------------------------------
+#   # FACT TABLES / MARTS
+#   # ------------------------------
+
+#   - name: fct_driver_laps
+#     description: "Canonical lap-level fact table with engineered performance features."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - driver_number
+#             - lap_number
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: driver_number
+#         tests: [not_null]
+#       - name: lap_number
+#         tests: [not_null]
+
+#   - name: fct_driver_race_summary
+#     description: "Driver-level summary of each race/session (best lap, pit stops, avg metrics)."
+#     tests:
+#       - dbt_utils.unique_combination_of_columns:
+#           combination_of_columns:
+#             - meeting_key
+#             - session_key
+#             - driver_number
+#     columns:
+#       - name: meeting_key
+#         tests: [not_null]
+#       - name: session_key
+#         tests: [not_null]
+#       - name: driver_number
+#         tests: [not_null]
+
+
+
+
+
+version: 2
+
+# ============================================================
+#  DBT MODELS (staging + intermediate + marts)
+# ============================================================
+
+models:
+
+  # ------------------------------
+  # STAGING MODELS
+  # ------------------------------
+
+  - name: stg_openf1_laps_historical
+    description: "Clean + typed historical laps data."
+    # tests:
+    #   - dbt_utils.unique_combination_of_columns:
+    #       arguments:
+    #         combination_of_columns:
+    #           - meeting_key
+    #           - session_key
+    #           - driver_number
+    #           - lap_number
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: driver_number
+        tests: [not_null]
+      - name: lap_number
+        tests: [not_null]
+
+  - name: stg_openf1_laps_realtime
+    description: "Clean + typed realtime laps data."
+    # no uniqueness test here – realtime feed can have dupes at this grain
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: driver_number
+        tests: [not_null]
+      - name: lap_number
+        tests: [not_null]
+
+  - name: stg_openf1_position_historical
+    description: "Clean + typed historical driver positions."
+    # tests:
+    #   - dbt_utils.unique_combination_of_columns:
+    #       arguments:
+    #         combination_of_columns:
+    #           - meeting_key
+    #           - session_key
+    #           - driver_number
+    #           - event_timestamp
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: driver_number
+        tests: [not_null]
+      - name: event_timestamp
+        tests: [not_null]
+
+  - name: stg_openf1_position_realtime
+    description: "Clean realtime driver positions."
+    # no uniqueness test here – realtime feed can have dupes at this grain
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: driver_number
+        tests: [not_null]
+      - name: event_timestamp
+        tests: [not_null]
+
+  - name: stg_openf1_race_control_historical
+    description: "Clean historical race control messages."
+    # tests:
+    #   - dbt_utils.unique_combination_of_columns:
+    #       arguments:
+    #         combination_of_columns:
+    #           - meeting_key
+    #           - session_key
+    #           - event_timestamp
+    #           - message
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: event_timestamp
+        tests: [not_null]
+      - name: message
+        tests: [not_null]
+
+  - name: stg_openf1_race_control_realtime
+    description: "Clean realtime race control messages."
+    # no uniqueness test here – realtime feed can have dupes at this grain
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: event_timestamp
+        tests: [not_null]
+      - name: message
+        tests: [not_null]
+
+
+  # ------------------------------
+  # INTERMEDIATE UNION MODELS
+  # ------------------------------
+
+  - name: int_openf1_laps_all
+    description: "Historical + realtime laps, merged and deduped."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - meeting_key
+              - session_key
+              - driver_number
+              - lap_number
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: driver_number
+        tests: [not_null]
+      - name: lap_number
+        tests: [not_null]
+
+  - name: int_openf1_position_all
+    description: "Historical + realtime driver positions, merged and deduped."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - meeting_key
+              - session_key
+              - driver_number
+              - event_timestamp
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: driver_number
+        tests: [not_null]
+      - name: event_timestamp
+        tests: [not_null]
+
+  - name: int_openf1_race_control_all
+    description: "Historical + realtime race control messages, merged and deduped."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - meeting_key
+              - session_key
+              - event_timestamp
+              - message
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: event_timestamp
+        tests: [not_null]
+      - name: message
+        tests: [not_null]
+
+
+  # ------------------------------
+  # INTERMEDIATE FEATURE MODELS
+  # ------------------------------
+
+  - name: int_session_driver_laps
+    description: "Lap-level table enriched with nearest-as-of driver position."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - meeting_key
+              - session_key
+              - driver_number
+              - lap_number
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: driver_number
+        tests: [not_null]
+      - name: lap_number
+        tests: [not_null]
+
+  - name: int_driver_lap_features
+    description: "Feature engineering: momentum, degradation, stability, labels, performance score."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - meeting_key
+              - session_key
+              - driver_number
+              - lap_number
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: driver_number
+        tests: [not_null]
+      - name: lap_number
+        tests: [not_null]
+
+
+  # ------------------------------
+  # FACT TABLES / MARTS
+  # ------------------------------
+
+  - name: fct_driver_laps
+    description: "Canonical lap-level fact table with engineered performance features."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - meeting_key
+              - session_key
+              - driver_number
+              - lap_number
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: driver_number
+        tests: [not_null]
+      - name: lap_number
+        tests: [not_null]
+
+  - name: fct_driver_race_summary
+    description: "Driver-level summary of each race/session (best lap, pit stops, avg metrics)."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - meeting_key
+              - session_key
+              - driver_number
+    columns:
+      - name: meeting_key
+        tests: [not_null]
+      - name: session_key
+        tests: [not_null]
+      - name: driver_number
+        tests: [not_null]
+
+
+    # ------------------------------
+  # FINAL ANALYTICS TABLE
+  # ------------------------------
+
+  - name: final_f1
+    description: "Unified final F1 performance table combining lap-level data with driver/session summary metrics."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - meeting_key
+              - session_key
+              - driver_number
+              - lap_number
+    columns:
+      - name: meeting_key
+        description: "Race event identifier."
+        tests: [not_null]
+
+      - name: session_key
+        description: "Session identifier (FP1/FP2/Q/Race)."
+        tests: [not_null]
+
+      - name: driver_number
+        description: "Unique car number."
+        tests: [not_null]
+
+      - name: lap_number
+        description: "Lap number within the session."
+        tests: [not_null]
+
+      - name: lap_time
+        description: "Recorded lap time in seconds."
+
+      - name: sector1_time
+        description: "Sector 1 split time."
+
+      - name: sector2_time
+        description: "Sector 2 split time."
+
+      - name: sector3_time
+        description: "Sector 3 split time."
+
+      - name: race_position
+        description: "Driver’s position at the end of the lap."
+
+      - name: first_lap
+        description: "The driver’s first recorded lap in the session."
+
+      - name: last_lap
+        description: "The driver’s final recorded lap in the session."
+
+      - name: best_lap_time
+        description: "The fastest lap the driver achieved in the session."
+
+      - name: avg_lap_time
+        description: "Driver’s average lap time."
+
+      - name: best_position
+        description: "Highest race position achieved."
+
+      - name: worst_position
+        description: "Lowest race position achieved."
+
+      - name: avg_psi
+        description: "Average pace stability index — higher means more consistent."
+
+      - name: avg_degradation
+        description: "Average tyre degradation metric."
+
+      - name: avg_performance_score
+        description: "Overall session performance score."
+
+      - name: pit_stop_count
+        description: "Number of pit stops performed."
+

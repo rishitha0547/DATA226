@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: raw
+    database: USER_DB_FERRET
+    schema: RAW
+    tables:
+      - name: OPENF1_LAPS_REALTIME
+      - name: OPENF1_LAPS_HISTORICAL
+
+      - name: OPENF1_POSITION_REALTIME        
+      - name: OPENF1_POSITION_HISTORICAL
+
+      - name: OPENF1_RACE_CONTROL_REALTIME    
+      - name: OPENF1_RACE_CONTROL_HISTORICAL    
